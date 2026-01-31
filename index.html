@@ -1,102 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BKK Kids Researcher Database</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
-        .card-shadow { transition: all 0.2s ease; border: 1px solid #e2e8f0; }
-        .card-shadow:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -5px rgba(0,0,0,0.1); border-color: #4f46e5; }
-        .modal-overlay { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); }
-        .custom-scroll::-webkit-scrollbar { width: 5px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        [onclick] { cursor: pointer; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BKK Kids Researcher Database</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+    .card-shadow { transition: all 0.2s ease; border: 1px solid #e2e8f0; }
+    .card-shadow:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -5px rgba(0,0,0,0.1); border-color: #4f46e5; }
+    .modal-overlay { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); }
+    .custom-scroll::-webkit-scrollbar { width: 5px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    [onclick] { cursor: pointer; }
+    /* Tailwind CDN doesn't include line-clamp plugin by default */
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Header Navigation -->
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="bg-indigo-600 p-2 rounded-lg text-white font-bold shadow-sm">B</div>
-                <div>
-                    <h1 class="text-sm font-bold text-slate-900 leading-none">BKK Kids Researcher</h1>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Verified Master Database</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-4">
-                <button onclick="exportCSV()" class="flex items-center space-x-2 px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-md hover:bg-emerald-700 transition">
-                    <span>Export to CSV</span>
-                </button>
-            </div>
+  <!-- Header Navigation -->
+  <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="bg-indigo-600 p-2 rounded-lg text-white font-bold shadow-sm">B</div>
+        <div>
+          <h1 class="text-sm font-bold text-slate-900 leading-none">Kids Researcher</h1>
+          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Bangkok Master List</p>
         </div>
-    </nav>
+      </div>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto p-4 md:p-8">
-        <div class="flex flex-col md:flex-row gap-8">
-            
-            <!-- Sidebar Filters -->
-            <aside class="w-full md:w-72 space-y-6 shrink-0">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm sticky top-24">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Database Filters</h3>
-                    
-                    <div class="space-y-5">
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Quick Search</label>
-                            <input type="text" id="search-box" oninput="applyFilters()" placeholder="Search names or keywords..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20">
-                        </div>
-
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Neighborhood</label>
-                            <select id="filter-area" onchange="applyFilters()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none"></select>
-                        </div>
-
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Category</label>
-                            <select id="filter-cat" onchange="applyFilters()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none"></select>
-                        </div>
-
-                        <div class="pt-6 border-t border-slate-100">
-                            <div class="bg-indigo-50 p-4 rounded-xl">
-                                <p class="text-[10px] text-indigo-400 font-bold uppercase mb-1">Live Count</p>
-                                <span id="res-count" class="text-3xl font-bold text-indigo-600">0</span>
-                                <span class="text-xs text-indigo-300 ml-1">venues</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </aside>
-
-            <!-- Main Venue Grid -->
-            <div id="grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 flex-grow h-fit">
-                <!-- Cards Injected Here -->
-            </div>
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-2xl p-1">
+          <a href="./index.html" class="px-3 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white">Bangkok</a>
+          <a href="./huahin.html" class="px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">Hua Hin</a>
         </div>
-    </main>
 
-    <!-- Detailed Modal (The "Next Screen") -->
-    <div id="detail-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-        <div class="modal-overlay absolute inset-0" onclick="closeModal()"></div>
-        <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
-            <div id="modal-content" class="p-8 overflow-y-auto custom-scroll space-y-6">
-                <!-- Detailed content injected by JS -->
-            </div>
-            <div class="p-6 border-t border-slate-100 bg-slate-50 flex justify-end">
-                <button onclick="closeModal()" class="px-8 py-3 bg-slate-900 text-white font-bold rounded-2xl text-sm hover:bg-black transition">Close Profile</button>
-            </div>
-        </div>
+        <button onclick="exportCSV()" class="px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-md hover:bg-emerald-700 transition">
+          Export to CSV
+        </button>
+      </div>
     </div>
+  </nav>
 
-    <script>
-        // --- MASTER DATASET: REAL VERIFIED VENUES ---
-        // You can add more manually here following this exact structure.
-        let venues = [
-            // --- KIDS CAFES ---
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto p-4 md:p-8">
+    <div class="flex flex-col md:flex-row gap-8">
+
+      <!-- Sidebar Filters -->
+      <aside class="w-full md:w-72 space-y-6 shrink-0">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm sticky top-24">
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Database Filters</h3>
+
+          <div class="space-y-5">
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Quick Search</label>
+              <input type="text" id="search-box" oninput="applyFilters()" placeholder="Search names or keywords..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20">
+            </div>
+
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Neighborhood</label>
+              <select id="filter-area" onchange="applyFilters()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none"></select>
+            </div>
+
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Category</label>
+              <select id="filter-cat" onchange="applyFilters()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none"></select>
+            </div>
+
+            <div class="pt-6 border-t border-slate-100">
+              <div class="bg-indigo-50 p-4 rounded-xl">
+                <p class="text-[10px] text-indigo-400 font-bold uppercase mb-1">Live Count</p>
+                <span id="res-count" class="text-3xl font-bold text-indigo-600">0</span>
+                <span class="text-xs text-indigo-300 ml-1">venues</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Venue Grid -->
+      <div id="grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 flex-grow h-fit">
+        <!-- Cards Injected Here -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Detailed Modal -->
+  <div id="detail-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+    <div class="modal-overlay absolute inset-0" onclick="closeModal()"></div>
+    <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+      <div id="modal-content" class="p-8 overflow-y-auto custom-scroll space-y-6">
+        <!-- Detailed content injected by JS -->
+      </div>
+      <div class="p-6 border-t border-slate-100 bg-slate-50 flex justify-end">
+        <button onclick="closeModal()" class="px-8 py-3 bg-slate-900 text-white font-bold rounded-2xl text-sm hover:bg-black transition">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- MASTER DATASET ---
+    let venues = [
+// --- KIDS CAFES ---
             {
   id: 1,
   name: "Playville",
@@ -500,124 +512,210 @@
     phone: "061-591-4888",
     facebook: "geniuskidscafe"
   }
+    ];
 
-        ];
+    // --- HELPERS ---
+    function normStr(x) {
+      if (x === undefined || x === null) return "N/A";
+      const s = String(x).trim();
+      return s.length ? s : "N/A";
+    }
 
-        // --- APPLICATION LOGIC ---
-        function init() {
-            populateFilters();
-            applyFilters();
-        }
+    function normalizeVenue(v) {
+      return {
+        id: v.id,
+        name: normStr(v.name),
+        category: normStr(v.category),
+        area: normStr(v.area),
+        price: normStr(v.price),
+        age: normStr(v.age),
+        desc: normStr(v.desc),
+        address: normStr(v.address),
+        maps: normStr(v.maps),
+        instagram: normStr(v.instagram),
+        facebook: normStr(v.facebook),
+        phone: normStr(v.phone),
+      };
+    }
 
-        function populateFilters() {
-            const areas = ["All", ...new Set(venues.map(v => v.area))].sort();
-            const cats = ["All", ...new Set(venues.map(v => v.category))].sort();
-            document.getElementById('filter-area').innerHTML = areas.map(a => `<option value="${a}">${a}</option>`).join('');
-            document.getElementById('filter-cat').innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
-        }
+    function instagramUrl(handle) {
+      if (!handle || handle === "N/A") return null;
+      const h = handle.startsWith("@") ? handle.slice(1) : handle;
+      return "https://www.instagram.com/" + h + "/";
+    }
 
-        function applyFilters() {
-            const search = document.getElementById('search-box').value.toLowerCase();
-            const area = document.getElementById('filter-area').value;
-            const cat = document.getElementById('filter-cat').value;
+    function facebookUrl(page) {
+      if (!page || page === "N/A") return null;
+      if (page.startsWith("http://") || page.startsWith("https://")) return page;
+      return "https://www.facebook.com/" + page;
+    }
 
-            const filtered = venues.filter(v => {
-                if(area !== 'All' && v.area !== area) return false;
-                if(cat !== 'All' && v.category !== cat) return false;
-                if(search && !v.name.toLowerCase().includes(search) && !v.desc.toLowerCase().includes(search)) return false;
-                return true;
-            });
+    function isValidUrl(u) {
+      try { new URL(u); return true; } catch (_) { return false; }
+    }
 
-            renderList(filtered);
-        }
+    function csvEscape(value) {
+      const s = String(value ?? "");
+      return /[",\n]/.test(s) ? ('"' + s.replaceAll('"', '""') + '"') : s;
+    }
 
-        function renderList(list) {
-            const container = document.getElementById('grid-container');
-            document.getElementById('res-count').innerText = list.length;
-            
-            if(list.length === 0) {
-                container.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400">No results found matching your filters.</div>`;
-                return;
-            }
+    // --- APPLICATION LOGIC ---
+    function init() {
+      venues = venues.map(normalizeVenue);
+      enforceUniqueIds();
+      populateFilters();
+      applyFilters();
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+      });
+    }
 
-            container.innerHTML = list.map(v => `
-                <div onclick="openModal(${v.id})" class="bg-white p-5 rounded-2xl shadow-sm card-shadow flex flex-col cursor-pointer group h-full">
-                    <div class="flex-grow">
-                        <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">${v.category}</span>
-                        <h3 class="font-bold text-sm text-slate-900 mt-3 group-hover:text-indigo-600 transition leading-tight">${v.name}</h3>
-                        <p class="text-[10px] text-slate-400 mt-1 flex items-center">📍 ${v.area}</p>
-                        <p class="text-[11px] text-slate-600 mt-3 line-clamp-2 leading-relaxed">${v.desc}</p>
-                    </div>
-                    <div class="pt-4 mt-4 border-t border-slate-50 flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase">
-                        <span>${v.price} Price</span>
-                        <span class="text-indigo-600 font-bold group-hover:translate-x-1 transition-transform">Profile →</span>
-                    </div>
-                </div>
-            `).join('');
-        }
+    function enforceUniqueIds() {
+      const seen = new Set();
+      const dupes = [];
+      for (const v of venues) {
+        if (seen.has(v.id)) dupes.push(v.id);
+        seen.add(v.id);
+      }
+      if (dupes.length) console.warn("Duplicate venue IDs detected:", dupes);
+    }
 
-        function openModal(id) {
-            const v = venues.find(item => item.id === id);
-            document.getElementById('modal-content').innerHTML = `
-                <span class="text-[10px] font-bold uppercase text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100 inline-block mb-3">${v.category}</span>
-                <h2 class="text-3xl font-bold text-slate-900 leading-tight">${v.name}</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
-                    <div class="space-y-5">
-                        <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Location Detail</h4>
-                        <p class="text-sm text-slate-700 font-medium leading-relaxed">${v.address}</p>
-                        <a href="${v.maps}" target="_blank" class="text-indigo-600 font-bold text-sm underline flex items-center italic">Open in Google Maps ↗</a>
-                    </div>
-                    <div class="space-y-5">
-                        <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Contact Information</h4>
-                        <div class="space-y-2">
-                            <p class="text-sm text-slate-700 font-medium">📞 ${v.phone}</p>
-                            <p class="text-sm text-indigo-600 font-bold underline">Instagram: ${v.instagram}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 mt-6">
-                    <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-2">Research Note</h4>
-                    <p class="text-sm text-slate-600 leading-relaxed">${v.desc}</p>
-                    <div class="flex mt-4 space-x-4">
-                        <div class="text-[10px] font-bold"><span class="text-slate-400">AGE FIT:</span> ${v.age} YRS</div>
-                        <div class="text-[10px] font-bold"><span class="text-slate-400">PRICE:</span> ${v.price}</div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('detail-modal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
+    function populateFilters() {
+      const areas = ["All", ...new Set(venues.map(v => v.area))].sort((a,b)=>a.localeCompare(b));
+      const cats = ["All", ...new Set(venues.map(v => v.category))].sort((a,b)=>a.localeCompare(b));
+      document.getElementById("filter-area").innerHTML = areas.map(a => `<option value="${a}">${a}</option>`).join("");
+      document.getElementById("filter-cat").innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join("");
+    }
 
-        function closeModal() { 
-            document.getElementById('detail-modal').classList.add('hidden'); 
-            document.body.style.overflow = 'auto';
-        }
+    function applyFilters() {
+      const search = document.getElementById("search-box").value.toLowerCase();
+      const area = document.getElementById("filter-area").value;
+      const cat = document.getElementById("filter-cat").value;
 
-        function exportCSV() {
-            const headers = "ID,Name,Category,Area,Price,Age,Address,Instagram,Maps\n";
-            const rows = venues.map(v => [v.id, `"${v.name}"`, v.category, v.area, v.price, v.age, `"${v.address}"`, v.instagram, v.maps].join(",")).join("\n");
-            const blob = new Blob([headers + rows], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('hidden', '');
-            a.setAttribute('href', url);
-            a.setAttribute('download', 'BKK_Kids_Database_Export.csv');
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
+      const filtered = venues
+        .filter(v => {
+          if (area !== "All" && v.area !== area) return false;
+          if (cat !== "All" && v.category !== cat) return false;
+          if (search) {
+            const hay = (v.name + " " + v.desc + " " + v.address).toLowerCase();
+            if (!hay.includes(search)) return false;
+          }
+          return true;
+        })
+        .sort((a,b)=>a.name.localeCompare(b.name));
 
-        init();
-    </script>
+      renderList(filtered);
+    }
+
+    function renderList(list) {
+      const container = document.getElementById("grid-container");
+      document.getElementById("res-count").innerText = list.length;
+
+      if (list.length === 0) {
+        container.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400">No results found matching your filters.</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(v => `
+        <div onclick="openModal(${v.id})" class="bg-white p-5 rounded-2xl shadow-sm card-shadow flex flex-col cursor-pointer group h-full">
+          <div class="flex-grow">
+            <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">${v.category}</span>
+            <h3 class="font-bold text-sm text-slate-900 mt-3 group-hover:text-indigo-600 transition leading-tight">${v.name}</h3>
+            <p class="text-[10px] text-slate-400 mt-1 flex items-center">📍 ${v.area}</p>
+            <p class="text-[11px] text-slate-600 mt-3 line-clamp-2 leading-relaxed">${v.desc}</p>
+          </div>
+          <div class="pt-4 mt-4 border-t border-slate-50 flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase">
+            <span>${v.price} Price</span>
+            <span class="text-indigo-600 font-bold group-hover:translate-x-1 transition-transform">Profile →</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function openModal(id) {
+      const v = venues.find(item => item.id === id);
+      if (!v) { alert("Venue not found (bad id)."); return; }
+
+      const igUrl = instagramUrl(v.instagram);
+      const fbUrl = facebookUrl(v.facebook);
+      const mapsOk = isValidUrl(v.maps);
+
+      const mapsHtml = mapsOk
+        ? `<a href="${v.maps}" rel="noopener noreferrer" target="_blank" class="text-indigo-600 font-bold text-sm underline flex items-center italic">Open in Google Maps ↗</a>`
+        : `<p class="text-sm text-rose-600 font-bold">Maps link missing/invalid</p>`;
+
+      const phoneHtml = (v.phone !== "N/A")
+        ? `<a href="tel:${v.phone.replace(/\s+/g,'')}" class="underline">${v.phone}</a>`
+        : `<span class="text-slate-400">N/A</span>`;
+
+      const igHtml = igUrl
+        ? `<a href="${igUrl}" rel="noopener noreferrer" target="_blank" class="text-indigo-600 underline">${v.instagram}</a>`
+        : `<span class="text-slate-400">N/A</span>`;
+
+      const fbHtml = fbUrl
+        ? `<a href="${fbUrl}" rel="noopener noreferrer" target="_blank" class="text-indigo-600 underline">${v.facebook}</a>`
+        : `<span class="text-slate-400">N/A</span>`;
+
+      document.getElementById("modal-content").innerHTML = `
+        <span class="text-[10px] font-bold uppercase text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100 inline-block mb-3">${v.category}</span>
+        <h2 class="text-3xl font-bold text-slate-900 leading-tight">${v.name}</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
+          <div class="space-y-4">
+            <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Location</h4>
+            <p class="text-sm text-slate-700 font-medium leading-relaxed">${v.address}</p>
+            ${mapsHtml}
+          </div>
+
+          <div class="space-y-4">
+            <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Contacts</h4>
+            <div class="space-y-2">
+              <p class="text-sm text-slate-700 font-medium">📞 ${phoneHtml}</p>
+              <p class="text-sm font-bold">📸 Instagram: ${igHtml}</p>
+              <p class="text-sm font-bold">f Facebook: ${fbHtml}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 mt-6">
+          <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-2">Notes</h4>
+          <p class="text-sm text-slate-600 leading-relaxed">${v.desc}</p>
+          <div class="flex mt-4 space-x-4">
+            <div class="text-[10px] font-bold"><span class="text-slate-400">AGE FIT:</span> ${v.age}</div>
+            <div class="text-[10px] font-bold"><span class="text-slate-400">PRICE:</span> ${v.price}</div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("detail-modal").classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+      document.getElementById("detail-modal").classList.add("hidden");
+      document.body.style.overflow = "auto";
+    }
+
+    function exportCSV() {
+      const headers = ["ID","Name","Category","Area","Price","Age","Address","Instagram","Facebook","Maps"];
+      const rows = venues.map(v => ([
+        v.id, v.name, v.category, v.area, v.price, v.age, v.address, v.instagram, v.facebook, v.maps
+      ].map(csvEscape).join(",")));
+
+      const blob = new Blob([headers.join(",") + "\n" + rows.join("\n")], { type: "text/csv;charset=utf-8" });
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.setAttribute("hidden", "");
+      a.setAttribute("href", url);
+      a.setAttribute("download", "BKK_Kids_Database_Export.csv");
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }
+
+    init();
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
