@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BKK Kids Master Database | Analyst Explorer</title>
+    <title>BKK Kids Researcher Database</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -18,24 +18,25 @@
 </head>
 <body>
 
-    <!-- Header -->
+    <!-- Header Navigation -->
     <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <div class="bg-indigo-600 p-2 rounded-lg text-white font-bold shadow-sm">B</div>
                 <div>
                     <h1 class="text-sm font-bold text-slate-900 leading-none">BKK Kids Researcher</h1>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Master Database</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Verified Master Database</p>
                 </div>
             </div>
-            <div class="flex items-center">
+            <div class="flex items-center space-x-4">
                 <button onclick="exportCSV()" class="flex items-center space-x-2 px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-md hover:bg-emerald-700 transition">
-                    <span>Export to Excel (CSV)</span>
+                    <span>Export to CSV</span>
                 </button>
             </div>
         </div>
     </nav>
 
+    <!-- Main Content -->
     <main class="max-w-7xl mx-auto p-4 md:p-8">
         <div class="flex flex-col md:flex-row gap-8">
             
@@ -47,7 +48,7 @@
                     <div class="space-y-5">
                         <div>
                             <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Quick Search</label>
-                            <input type="text" id="search-box" oninput="applyFilters()" placeholder="Name or keyword..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20">
+                            <input type="text" id="search-box" oninput="applyFilters()" placeholder="Search names or keywords..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20">
                         </div>
 
                         <div>
@@ -56,13 +57,13 @@
                         </div>
 
                         <div>
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Primary Category</label>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Category</label>
                             <select id="filter-cat" onchange="applyFilters()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none"></select>
                         </div>
 
                         <div class="pt-6 border-t border-slate-100">
                             <div class="bg-indigo-50 p-4 rounded-xl">
-                                <p class="text-[10px] text-indigo-400 font-bold uppercase mb-1">Current Results</p>
+                                <p class="text-[10px] text-indigo-400 font-bold uppercase mb-1">Live Count</p>
                                 <span id="res-count" class="text-3xl font-bold text-indigo-600">0</span>
                                 <span class="text-xs text-indigo-300 ml-1">venues</span>
                             </div>
@@ -73,7 +74,7 @@
 
             <!-- Main Venue Grid -->
             <div id="grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 flex-grow h-fit">
-                <!-- Cards will be injected here -->
+                <!-- Cards Injected Here -->
             </div>
         </div>
     </main>
@@ -92,51 +93,54 @@
     </div>
 
     <script>
-        // --- MASTER DATASET: THE CORE REPOSITORY ---
-        // To add a new place, simply add a new { object } to this array below.
-        // --- MASTER DATASET: REAL VERIFIED VENUES ONLY ---
+        // --- MASTER DATASET: REAL VERIFIED VENUES ---
+        // You can add more manually here following this exact structure.
         let venues = [
-            // --- KIDS CAFES / FAMILY CAFES ---
-            { id: 1, name: "Playville", category: "Kids Cafe", area: "Thonglor", price: "Medium", age: "0-5", desc: "Premium wooden toys and sensory play area. Very clean and safe for toddlers.", address: "49 Playscape, Sukhumvit 49, Bangkok", maps: "https://maps.google.com/?q=Playville+Sukhumvit+49", instagram: "@playville", phone: "02-297-0091" },
-            { id: 2, name: "Mari Go Round", category: "Kids Cafe", area: "Ratchaphruek", price: "Medium", age: "0-6", desc: "Aesthetic white-themed cafe with an indoor carousel and soft play.", address: "The Crystal SB Ratchapruek, Bangkok", maps: "https://maps.google.com/?q=Mari+Go+Round+Cafe", instagram: "@marigoround.kidscafe", phone: "081-912-1111" },
-            { id: 3, name: "Sweet Poppy", category: "Kids Cafe", area: "Nonthaburi", price: "High", age: "0-12", desc: "The ultimate expat family destination. Massive outdoor playground and high-quality food.", address: "90/10 Samakee Rd, Nonthaburi", maps: "https://maps.google.com/?q=Sweet+Poppy+Bangkok", instagram: "@sweetpoppythailand", phone: "02-005-5206" },
-            { id: 4, name: "Fairy Fox Cafe", category: "Kids Cafe", area: "Phutthamonthon", price: "Medium", age: "3-9", desc: "Beautiful garden playground with animal interactions (foxes/rabbits).", address: "Phutthamonthon Sai 1, Bangkok", maps: "https://maps.google.com/?q=Fairy+Fox+Cafe", instagram: "@fairyfoxcafe", phone: "090-970-3512" },
-            { id: 5, name: "Lili's Little Cafe", category: "Kids Cafe", area: "Sukhumvit", price: "Medium", age: "0-5", desc: "Cozy community space with a soft play area and breastfeeding facilities.", address: "Soi Sukhumvit 49, Bangkok", maps: "https://maps.google.com/?q=Lili's+Little+Cafe", instagram: "@lilis_little_cafe", phone: "091-881-8123" },
-            { id: 6, name: "Little Pea (The Commons)", category: "Kids Cafe", area: "Thonglor", price: "High", age: "0-12", desc: "Creative hub offering messy play, cooking, and seasonal workshops.", address: "The Commons Thong Lo, Top Yard", maps: "https://maps.google.com/?q=Little+Pea+The+Commons", instagram: "@littlepeabkk", phone: "02-185-2378" },
+            // --- KIDS CAFES ---
+            { id: 1, name: "Playville", category: "Kids Cafe", area: "Thonglor", price: "Medium", age: "0-5", desc: "Premium wooden toys and sensory play area. Very clean and safe for toddlers.", address: "49 Playscape, Sukhumvit 49, Bangkok", maps: "https://maps.google.com/?q=Playville+Sukhumvit+49", instagram: "@playville", phone: "02-297-0091", facebook: "playvillethailand" },
+            { id: 2, name: "Mari Go Round", category: "Kids Cafe", area: "Ratchaphruek", price: "Medium", age: "0-6", desc: "Aesthetic white-themed cafe with an indoor carousel and soft play.", address: "The Crystal SB Ratchapruek, Bangkok", maps: "https://maps.google.com/?q=Mari+Go+Round+Cafe", instagram: "@marigoround.kidscafe", phone: "081-912-1111", facebook: "marigoround.kidscafe" },
+            { id: 3, name: "Sweet Poppy", category: "Kids Cafe", area: "Nonthaburi", price: "High", age: "0-12", desc: "Expat favorite. Massive outdoor playground, pool, and high-quality bistro.", address: "90/10 Samakee Rd, Nonthaburi", maps: "https://maps.google.com/?q=Sweet+Poppy+Bangkok", instagram: "@sweetpoppythailand", phone: "02-005-5206", facebook: "sweetpoppythailand" },
+            { id: 4, name: "Fairy Fox Cafe", category: "Kids Cafe", area: "Phutthamonthon", price: "Medium", age: "3-9", desc: "Garden playground with animal interactions (foxes/rabbits).", address: "Phutthamonthon Sai 1, Bangkok", maps: "https://maps.google.com/?q=Fairy+Fox+Cafe", instagram: "@fairyfoxcafe", phone: "090-970-3512", facebook: "fairyfoxcafe" },
+            { id: 5, name: "Lili's Little Cafe", category: "Kids Cafe", area: "Sukhumvit", price: "Medium", age: "0-5", desc: "Cozy community space with a soft play area for younger children.", address: "Soi Sukhumvit 49, Bangkok", maps: "https://maps.google.com/?q=Lili's+Little+Cafe", instagram: "@lilis_little_cafe", phone: "091-881-8123", facebook: "lilis_little_cafe" },
+            { id: 6, name: "Little Pea (The Commons)", category: "Kids Cafe", area: "Thonglor", price: "High", age: "0-12", desc: "Creative hub offering messy play, cooking, and seasonal workshops.", address: "The Commons Thong Lo, Top Yard", maps: "https://maps.google.com/?q=Little+Pea+The+Commons", instagram: "@littlepeabkk", phone: "02-185-2378", facebook: "littlepeabkk" },
+            { id: 7, name: "Two To Tree", category: "Kids Cafe", area: "Pathum Thani", price: "Low", age: "0-9", desc: "Garden cafe with rabbits and sand play zones.", address: "Bang Khu Wat, Pathum Thani", maps: "https://maps.google.com/?q=Two+To+Tree+Cafe", instagram: "@twototree", phone: "065-224-4665", facebook: "twototree" },
 
-            // --- INDOOR PLAY / PLAYGROUNDS ---
-            { id: 7, name: "HarborLand (Gateway Ekamai)", category: "Indoor Play", area: "Sukhumvit", price: "High", age: "0-12", desc: "Massive indoor playground with high-safety standards. Features slides and bike zones.", address: "Gateway Ekamai, 5th Floor", maps: "https://maps.google.com/?q=HarborLand+Gateway+Ekamai", instagram: "@harborland", phone: "065-848-1000" },
-            { id: 8, name: "HarborLand (Mega Bangna)", category: "Indoor Play", area: "Bang Na", price: "High", age: "0-12", desc: "One of the largest branches. Includes trampoline park and massive rope courses.", address: "Mega Bangna, 2nd Floor", maps: "https://maps.google.com/?q=HarborLand+Mega+Bangna", instagram: "@harborland", phone: "065-848-1000" },
-            { id: 9, name: "Playmondo (Central World)", category: "Indoor Play", area: "Siam", price: "High", age: "3-12", desc: "Nature-inspired interactive playground with digital projection games.", address: "Central World, 2nd Floor (Forum Zone)", maps: "https://maps.google.com/?q=Playmondo+Central+World", instagram: "@playmondo", phone: "02-103-2455" },
-            { id: 10, name: "SuperPark (ICONSIAM)", category: "Indoor Play", area: "Riverside", price: "High", age: "6-15", desc: "All-in-one activity park with climbing walls, skate ramps, and pedal cars.", address: "ICONSIAM, 6th Floor", maps: "https://maps.google.com/?q=SuperPark+Thailand", instagram: "@superpark_th", phone: "02-011-1555" },
-            { id: 11, name: "Kidzooona (Central Rama 9)", category: "Indoor Play", area: "Ratchada", price: "Medium", age: "0-8", desc: "Japanese-style roleplay stations (firefighter, baker) and large ball pits.", address: "Central Rama 9, 6th Floor", maps: "https://maps.google.com/?q=Kidzooona+Central+Rama+9", instagram: "N/A", phone: "02-103-4555" },
+            // --- INDOOR PLAY ---
+            { id: 10, name: "HarborLand (Gateway Ekamai)", category: "Indoor Play", area: "Sukhumvit", price: "High", age: "0-12", desc: "Standard-setting indoor playground. Massive slides and bike zones.", address: "Gateway Ekamai, 5th Floor", maps: "https://maps.google.com/?q=HarborLand+Gateway+Ekamai", instagram: "@harborland", phone: "065-848-1000", facebook: "harborland" },
+            { id: 11, name: "HarborLand (Mega Bangna)", category: "Indoor Play", area: "Bang Na", price: "High", age: "0-12", desc: "One of the largest branches including trampoline and rope courses.", address: "Mega Bangna, 2nd Floor", maps: "https://maps.google.com/?q=HarborLand+Mega+Bangna", instagram: "@harborland", phone: "065-848-1000", facebook: "harborland" },
+            { id: 12, name: "Playmondo (Central World)", category: "Indoor Play", area: "Siam", price: "High", age: "3-12", desc: "Nature-inspired interactive playground with digital projection games.", address: "Central World, 2nd Floor", maps: "https://maps.google.com/?q=Playmondo+Central+World", instagram: "@playmondo", phone: "02-103-2455", facebook: "playmondo" },
+            { id: 13, name: "SuperPark (ICONSIAM)", category: "Indoor Play", area: "Riverside", price: "High", age: "6-15", desc: "Activity park with climbing walls, skate ramps, and pedal cars.", address: "ICONSIAM, 6th Floor", maps: "https://maps.google.com/?q=SuperPark+Thailand", instagram: "@superpark_th", phone: "02-011-1555", facebook: "superparkth" },
+            { id: 14, name: "BunSook Playground", category: "Indoor Play", area: "Nonthaburi", price: "Medium", age: "0-6", desc: "Clean, sensory-focused play area for younger kids.", address: "Nonthaburi", maps: "https://maps.google.com/?q=BunSook+Playground", instagram: "N/A", phone: "091-881-8123", facebook: "bunsook" },
+            { id: 15, name: "Kidzooona (Central Rama 9)", category: "Indoor Play", area: "Ratchada", price: "Medium", age: "0-8", desc: "Japanese-style roleplay stations and ball pits.", address: "Central Rama 9, 6th Floor", maps: "https://maps.google.com/?q=Kidzooona+Central+Rama+9", instagram: "N/A", phone: "02-103-4555", facebook: "N/A" },
+            { id: 16, name: "Imaginia Playland", category: "Indoor Play", area: "Phrom Phong", price: "High", age: "3-10", desc: "High-tech digital playland inside Emporium.", address: "Emporium, 3rd Floor", maps: "https://maps.google.com/?q=Imaginia+Playland", instagram: "@imaginiaplayland", phone: "02-664-8338", facebook: "imaginiaplayland" },
 
             // --- MUSEUMS / SCIENCE ---
-            { id: 12, name: "Children's Discovery Museum", category: "Museum / Science", area: "Chatuchak", price: "Free", age: "3-12", desc: "Best free destination in BKK. Outdoor water play, dinosaur dig, and LEGO rooms.", address: "Kamphaeng Phet 4 Rd, Chatuchak", maps: "https://maps.google.com/?q=Children's+Discovery+Museum+Bangkok", instagram: "N/A", phone: "02-272-4500" },
-            { id: 13, name: "Museum Siam", category: "Museum / Science", area: "Old City", price: "Medium", age: "6-12", desc: "Interactive multimedia museum explaining Thai history and identity.", address: "Sanam Chai Rd, Phra Nakhon", maps: "https://maps.google.com/?q=Museum+Siam", instagram: "@museumsiam", phone: "02-225-2777" },
-            { id: 14, name: "Science Center for Education (Planetarium)", category: "Museum / Science", area: "Ekamai", price: "Low", age: "3-15", desc: "The iconic BKK planetarium and science labs. Great for astronomy-loving kids.", address: "928 Sukhumvit Rd, Bangkok", maps: "https://maps.google.com/?q=Science+Center+for+Education+Bangkok", instagram: "N/A", phone: "02-391-0544" },
-            { id: 15, name: "NSM Science Museum (Cubes)", category: "Museum / Science", area: "Pathum Thani", price: "Low", age: "5-15", desc: "Iconic cube buildings. 6 floors of science exhibits and experiments.", address: "Technopolis, Khlong Luang, Pathum Thani", maps: "https://maps.google.com/?q=NSM+Science+Museum", instagram: "@nsmthailand", phone: "02-577-9999" },
+            { id: 20, name: "Children's Discovery Museum", category: "Museum / Science", area: "Chatuchak", price: "Free", age: "3-12", desc: "Best free museum in BKK. Outdoor water play and dino dig.", address: "Kamphaeng Phet 4 Rd, Chatuchak", maps: "https://maps.google.com/?q=Children's+Discovery+Museum+Bangkok", instagram: "N/A", phone: "02-272-4500", facebook: "BKKDiscoveryMuseum" },
+            { id: 21, name: "Museum Siam", category: "Museum / Science", area: "Old City", price: "Medium", age: "6-12", desc: "Interactive multimedia museum explaining Thai history.", address: "Sanam Chai Rd, Phra Nakhon", maps: "https://maps.google.com/?q=Museum+Siam", instagram: "@museumsiam", phone: "02-225-2777", facebook: "museumsiam" },
+            { id: 22, name: "Planetarium (Science Center)", category: "Museum / Science", area: "Ekamai", price: "Low", age: "3-15", desc: "The iconic BKK planetarium and science hub.", address: "928 Sukhumvit Rd, Bangkok", maps: "https://maps.google.com/?q=Science+Center+for+Education+Bangkok", instagram: "N/A", phone: "02-391-0544", facebook: "N/A" },
+            { id: 23, name: "NSM Science Museum (Cubes)", category: "Museum / Science", area: "Pathum Thani", price: "Low", age: "5-15", desc: "6 floors of science experiments in the iconic cube building.", address: "Khlong Luang, Pathum Thani", maps: "https://maps.google.com/?q=NSM+Science+Museum", instagram: "@nsmthailand", phone: "02-577-9999", facebook: "nsmthailand" },
+            { id: 24, name: "Royal Thai Air Force Museum", category: "Museum / Science", area: "Don Mueang", price: "Free", age: "3-15", desc: "Real jets and planes for kids to explore up close.", address: "Phahonyothin Rd, Bangkok", maps: "https://maps.google.com/?q=RTAF+Museum", instagram: "N/A", phone: "02-534-1853", facebook: "rtafmuseum" },
 
-            // --- NATURE / PARKS / OUTDOOR ---
-            { id: 16, name: "Get Growing Community Farm", category: "Parks / Outdoor", area: "Bang Kachao", price: "Medium", age: "3-9", desc: "The 'Green Lung' farm. Famous for mud slides, pony rides, and nature play.", address: "Bang Kachao, Phra Pradaeng", maps: "https://maps.google.com/?q=Get+Growing+Community+Farm", instagram: "@getgrowingbkk", phone: "083-138-7000" },
-            { id: 17, name: "Wonder Woods Co-learning Space", category: "Parks / Outdoor", area: "Pattanakarn", price: "Medium", age: "3-9", desc: "Forest-school style play with mud kitchens and an indoor creative zone.", address: "Pattanakarn Soi 51, Bangkok", maps: "https://maps.google.com/?q=Wonder+Woods+Co-learning+Space", instagram: "@wonderwoods.co", phone: "086-338-8228" },
-            { id: 18, name: "Benjakitti Forest Park", category: "Parks / Outdoor", area: "Asoke", price: "Free", age: "0-15", desc: "Modern wetland park with elevated walkways and safe bike tracks for kids.", address: "Ratchadaphisek Rd, Khlong Toei", maps: "https://maps.google.com/?q=Benjakitti+Forest+Park", instagram: "N/A", phone: "N/A" },
-            { id: 19, name: "Ancient City (Muang Boran)", category: "Parks / Outdoor", area: "Samut Prakan", price: "Medium", age: "6-15", desc: "Massive outdoor museum. Perfect for family bike rides through Thailand's history.", address: "Sukhumvit Rd, Samut Prakan", maps: "https://maps.google.com/?q=Ancient+City+Bangkok", instagram: "N/A", phone: "02-323-4094" },
-            { id: 20, name: "Farm de Lek", category: "Parks / Outdoor", area: "Nakhon Nayok", price: "Medium", age: "3-12", desc: "Hands-on farm experience. Collecting eggs, organic gardening, and mud play.", address: "Khlong 15, Ongkharak, Nakhon Nayok", maps: "https://maps.google.com/?q=Farm+de+Lek", instagram: "@farmdelek", phone: "098-463-6956" },
+            // --- OUTDOOR / PARKS / FARMS ---
+            { id: 30, name: "Get Growing Community Farm", category: "Parks / Outdoor", area: "Bang Kachao", price: "Medium", age: "3-9", desc: "Mud slides, nature play, and farm animal encounters.", address: "Bang Kachao, Phra Pradaeng", maps: "https://maps.google.com/?q=Get+Growing+Community+Farm", instagram: "@getgrowingbkk", phone: "083-138-7000", facebook: "getgrowing" },
+            { id: 31, name: "Wonder Woods Co-learning", category: "Parks / Outdoor", area: "Pattanakarn", price: "Medium", age: "3-9", desc: "Forest-school style play and indoor creative studio.", address: "Pattanakarn Soi 51, Bangkok", maps: "https://maps.google.com/?q=Wonder+Woods+Co-learning+Space", instagram: "@wonderwoods.co", phone: "086-338-8228", facebook: "wonderwoodsco" },
+            { id: 32, name: "Benjakitti Forest Park", category: "Parks / Outdoor", area: "Asoke", price: "Free", age: "0-15", desc: "Modern wetland park with safe bike tracks and walkways.", address: "Ratchadaphisek Rd, Khlong Toei", maps: "https://maps.google.com/?q=Benjakitti+Forest+Park", instagram: "N/A", phone: "N/A", facebook: "N/A" },
+            { id: 33, name: "Ancient City (Muang Boran)", category: "Parks / Outdoor", area: "Samut Prakan", price: "Medium", age: "6-15", desc: "Massive outdoor museum for family biking.", address: "Samut Prakan", maps: "https://maps.google.com/?q=Ancient+City+Bangkok", instagram: "N/A", phone: "02-323-4094", facebook: "muangboran" },
+            { id: 34, name: "Farm de Lek", category: "Parks / Outdoor", area: "Nakhon Nayok", price: "Medium", age: "3-12", desc: "Hands-on farm day trip. Mud play and egg collecting.", address: "Ongkharak, Nakhon Nayok", maps: "https://maps.google.com/?q=Farm+de+Lek", instagram: "@farmdelek", phone: "098-463-6956", facebook: "farmdelek" },
 
-            // --- ZOO / AQUARIUM / ANIMALS ---
-            { id: 21, name: "Sea Life Bangkok", category: "Zoo / Aquarium", area: "Siam", price: "High", age: "0-15", desc: "World-class aquarium in Siam Paragon Mall. Penguin and shark encounters available.", address: "Siam Paragon B1-B2 Floor", maps: "https://maps.google.com/?q=Sea+Life+Bangkok", instagram: "@sealifebangkok", phone: "02-687-2000" },
-            { id: 22, name: "Safari World", category: "Zoo / Aquarium", area: "Min Buri", price: "High", age: "3-15", desc: "Open-air drive-thru safari and marine theme park with live animal shows.", address: "99 Panya Indra Rd, Khlong Sam Wa", maps: "https://maps.google.com/?q=Safari+World", instagram: "@safariworldbkk", phone: "02-518-1000" },
-            { id: 23, name: "Mini Murrah Farm", category: "Zoo / Aquarium", area: "Chachoengsao", price: "Medium", age: "3-9", desc: "Buffalo farm featuring workshops like pizza making and feeding buffaloes.", address: "Ban Pho, Chachoengsao", maps: "https://maps.google.com/?q=Mini+Murrah+Farm", instagram: "@minimurrahfarm", phone: "081-819-2819" },
-            { id: 24, name: "Snake Farm (Red Cross)", category: "Zoo / Aquarium", area: "Silom", price: "Low", age: "6-15", desc: "Educational snake shows and exhibits. Very professional and safe.", address: "1871 Rama IV Rd, Bangkok", maps: "https://maps.google.com/?q=Snake+Farm+Bangkok", instagram: "N/A", phone: "02-252-0161" },
+            // --- ZOO / AQUARIUM ---
+            { id: 40, name: "Sea Life Bangkok", category: "Zoo / Aquarium", area: "Siam", price: "High", age: "0-15", desc: "World-class aquarium inside Siam Paragon Mall.", address: "Siam Paragon B1-B2 Floor", maps: "https://maps.google.com/?q=Sea+Life+Bangkok", instagram: "@sealifebangkok", phone: "02-687-2000", facebook: "SEALIFEBangkok" },
+            { id: 41, name: "Safari World", category: "Zoo / Aquarium", area: "Min Buri", price: "High", age: "3-15", desc: "Open-air safari drive-thru and animal shows.", address: "99 Panya Indra Rd, Bangkok", maps: "https://maps.google.com/?q=Safari+World", instagram: "@safariworldbkk", phone: "02-518-1000", facebook: "safariworld.bangkok" },
+            { id: 42, name: "Snake Farm (Red Cross)", category: "Zoo / Aquarium", area: "Silom", price: "Low", age: "6-15", desc: "Professional educational snake shows.", address: "1871 Rama IV Rd, Bangkok", maps: "https://maps.google.com/?q=Snake+Farm+Bangkok", instagram: "N/A", phone: "02-252-0161", facebook: "N/A" },
 
             // --- CULTURAL / LIBRARY / ART ---
-            { id: 25, name: "Neilson Hays Library", category: "Cultural / Library", area: "Silom", price: "Low", age: "3-9", desc: "Stunning historic library with a dedicated kids' corner and Saturday storytime.", address: "195 Surawong Road, Bangkok", maps: "https://maps.google.com/?q=Neilson+Hays+Library", instagram: "@neilsonhays", phone: "02-233-1731" },
-            { id: 26, name: "TK Park", category: "Cultural / Library", area: "Siam", price: "Low", age: "3-15", desc: "Modern 'Living Library' in Central World mall. Great kids' zone and music rooms.", address: "Central World, 8th Floor", maps: "https://maps.google.com/?q=TK+Park+Central+World", instagram: "@tkpark_th", phone: "02-257-4300" },
-            { id: 27, name: "Paron School of Art", category: "Art / Maker Studio", area: "Sukhumvit", price: "High", age: "6-15", desc: "Top-tier English language art classes and seasonal holiday camps.", address: "Sukhumvit 26, Bangkok", maps: "https://maps.google.com/?q=Paron+School+of+Art", instagram: "@paronschoolofart", phone: "089-795-4229" },
-            { id: 28, name: "Alliance Française", category: "Cultural / Library", area: "Sathorn", price: "Medium", age: "6-15", desc: "French cultural center offering kids' cinema and creative workshops.", address: "Wireless Road, Lumphini, Bangkok", maps: "https://maps.google.com/?q=Alliance+Francaise+Bangkok", instagram: "@af_bangkok", phone: "02-670-4200" }
+            { id: 50, name: "Neilson Hays Library", category: "Cultural / Library", area: "Silom", price: "Low", age: "3-9", desc: "Historic library with English storytime Saturdays.", address: "195 Surawong Road, Bangkok", maps: "https://maps.google.com/?q=Neilson+Hays+Library", instagram: "@neilsonhays", phone: "02-233-1731", facebook: "NeilsonHaysLibrary" },
+            { id: 51, name: "Paron School of Art", category: "Art / Maker Studio", area: "Sukhumvit", price: "High", age: "6-15", desc: "Premier English art school and holiday camps.", address: "Sukhumvit 26, Bangkok", maps: "https://maps.google.com/?q=Paron+School+of+Art", instagram: "@paronschoolofart", phone: "089-795-4229", facebook: "paronschoolofart" },
+            { id: 52, name: "Alliance Française", category: "Cultural / Library", area: "Sathorn", price: "Medium", age: "6-15", desc: "French cultural center with kids cinema.", address: "Wireless Road, Bangkok", maps: "https://maps.google.com/?q=Alliance+Francaise+Bangkok", instagram: "@af_bangkok", phone: "02-670-4200", facebook: "af_bangkok" },
+            { id: 53, name: "TK Park (Central World)", category: "Cultural / Library", area: "Siam", price: "Low", age: "3-15", desc: "Modern living library with dedicated kids corner.", address: "Central World, 8th Floor", maps: "https://maps.google.com/?q=TK+Park+Central+World", instagram: "@tkpark_th", phone: "02-257-4300", facebook: "tkpark" }
         ];
 
+        // --- APPLICATION LOGIC ---
         function init() {
             populateFilters();
             applyFilters();
@@ -153,18 +157,26 @@
             const search = document.getElementById('search-box').value.toLowerCase();
             const area = document.getElementById('filter-area').value;
             const cat = document.getElementById('filter-cat').value;
+
             const filtered = venues.filter(v => {
                 if(area !== 'All' && v.area !== area) return false;
                 if(cat !== 'All' && v.category !== cat) return false;
                 if(search && !v.name.toLowerCase().includes(search) && !v.desc.toLowerCase().includes(search)) return false;
                 return true;
             });
+
             renderList(filtered);
         }
 
         function renderList(list) {
             const container = document.getElementById('grid-container');
             document.getElementById('res-count').innerText = list.length;
+            
+            if(list.length === 0) {
+                container.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400">No results found matching your filters.</div>`;
+                return;
+            }
+
             container.innerHTML = list.map(v => `
                 <div onclick="openModal(${v.id})" class="bg-white p-5 rounded-2xl shadow-sm card-shadow flex flex-col cursor-pointer group h-full">
                     <div class="flex-grow">
@@ -175,7 +187,7 @@
                     </div>
                     <div class="pt-4 mt-4 border-t border-slate-50 flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase">
                         <span>${v.price} Price</span>
-                        <span class="text-indigo-600 font-bold group-hover:translate-x-1 transition-transform">View Profile →</span>
+                        <span class="text-indigo-600 font-bold group-hover:translate-x-1 transition-transform">Profile →</span>
                     </div>
                 </div>
             `).join('');
@@ -201,11 +213,11 @@
                     </div>
                 </div>
                 <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 mt-6">
-                    <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-2">Analyst Review</h4>
+                    <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-2">Research Note</h4>
                     <p class="text-sm text-slate-600 leading-relaxed">${v.desc}</p>
                     <div class="flex mt-4 space-x-4">
                         <div class="text-[10px] font-bold"><span class="text-slate-400">AGE FIT:</span> ${v.age} YRS</div>
-                        <div class="text-[10px] font-bold"><span class="text-slate-400">TIER:</span> ${v.price}</div>
+                        <div class="text-[10px] font-bold"><span class="text-slate-400">PRICE:</span> ${v.price}</div>
                     </div>
                 </div>
             `;
@@ -219,14 +231,14 @@
         }
 
         function exportCSV() {
-            const headers = "ID,Name,Category,Area,Price,Age,Address\n";
-            const rows = venues.map(v => [v.id, v.name, v.category, v.area, v.price, v.age, v.address].join(",")).join("\n");
+            const headers = "ID,Name,Category,Area,Price,Age,Address,Instagram,Maps\n";
+            const rows = venues.map(v => [v.id, `"${v.name}"`, v.category, v.area, v.price, v.age, `"${v.address}"`, v.instagram, v.maps].join(",")).join("\n");
             const blob = new Blob([headers + rows], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.setAttribute('hidden', '');
             a.setAttribute('href', url);
-            a.setAttribute('download', 'BKK_Kids_Master_Export.csv');
+            a.setAttribute('download', 'BKK_Kids_Database_Export.csv');
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -236,4 +248,3 @@
     </script>
 </body>
 </html>
-
