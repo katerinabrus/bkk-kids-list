@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BKK Kids Researcher | Master Database</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .card-shadow { transition: all 0.2s ease; border: 1px solid #e2e8f0; }
+        .card-shadow:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-color: #4f46e5; }
+        .modal-overlay { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); }
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 p-2 rounded-lg text-white font-bold">B</div>
+                <div>
+                    <h1 class="text-sm font-bold text-slate-900 leading-none">BKK Kids Researcher</h1>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Master Database</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="exportCSV()" class="hidden md:block px-3 py-1.5 bg-emerald-50 text-emerald-600 text-xs font-bold rounded-lg border border-emerald-100">Export CSV</button>
+                <button onclick="switchView('explore')" id="btn-explore" class="px-4 py-2 text-xs font-bold rounded-lg bg-indigo-50 text-indigo-600">Explorer</button>
+                <button onclick="switchView('manage')" id="btn-manage" class="px-4 py-2 text-xs font-bold rounded-lg text-slate-500 hover:bg-slate-100">Database Tools</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+
+        <!-- VIEW: EXPLORE -->
+        <div id="view-explore" class="space-y-6">
+            <div class="flex flex-col md:flex-row gap-8">
+                <!-- Sidebar -->
+                <aside class="w-full md:w-64 space-y-6 shrink-0">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm sticky top-24">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Filters</h3>
+                        <div class="space-y-4">
+                            <input type="text" id="search-box" oninput="applyFilters()" placeholder="Search..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none">
+                            <select id="filter-area" onchange="applyFilters()" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm"></select>
+                            <select id="filter-cat" onchange="applyFilters()" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm"></select>
+                            <div class="pt-4 border-t border-slate-100">
+                                <p class="text-[10px] text-slate-400 font-bold uppercase mb-2">Results</p>
+                                <span id="res-count" class="text-2xl font-bold text-indigo-600">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- List -->
+                <div id="grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 flex-grow">
+                    <!-- Cards -->
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: MANAGE -->
+        <div id="view-manage" class="hidden space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h2 class="text-xl font-bold mb-2">Secret List (JSON)</h2>
+                    <p class="text-sm text-slate-500 mb-6">This is your data "Back-up". Copy this text and save it to a document on your computer to save your progress.</p>
+                    <textarea id="json-box" class="w-full h-80 p-4 font-mono text-[10px] bg-slate-900 text-emerald-400 rounded-2xl border-none outline-none"></textarea>
+                    <div class="flex space-x-2 mt-4">
+                        <button onclick="importJSON()" class="flex-grow py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg">Update Database from Text</button>
+                        <button onclick="copyJSON()" class="px-6 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl">Copy Text</button>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h2 class="text-xl font-bold mb-4">Add Single Venue</h2>
+                    <form id="add-form" class="space-y-3">
+                        <input type="text" id="in-name" placeholder="Name" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                        <input type="text" id="in-area" placeholder="Area (e.g. Thonglor)" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                        <input type="text" id="in-cat" placeholder="Category" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                        <button type="submit" class="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl shadow-lg">Add to List</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal -->
+    <div id="detail-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="modal-overlay absolute inset-0" onclick="closeModal()"></div>
+        <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+            <div id="modal-content" class="p-8 overflow-y-auto custom-scroll space-y-6">
+                <!-- Content injected here -->
+            </div>
+            <div class="p-6 border-t border-slate-100 bg-slate-50 flex justify-end">
+                <button onclick="closeModal()" class="px-8 py-2 bg-slate-900 text-white font-bold rounded-xl text-sm">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // MASTER DATASET (Restored & Comprehensive)
+        let venues = [
+            { id: 1, name: "Wonder Woods Co-learning Space", category: "Art / Maker Studio", area: "Pattanakarn", price: "Medium", age: "3-9", desc: "Outdoor mud play, forest school style learning, and indoor creative zone.", address: "Pattanakarn Soi 51, Bangkok", maps: "https://maps.google.com/?q=Wonder+Woods+Co-learning+Space", instagram: "@wonderwoods.co", phone: "086-338-8228" },
+            { id: 2, name: "Neilson Hays Library", category: "Cultural / Library", area: "Silom", price: "Low", age: "3-9", desc: "Historic library with English storytime every Saturday morning.", address: "195 Surawong Road, Bangkok", maps: "https://maps.google.com/?q=Neilson+Hays+Library", instagram: "@neilsonhays", phone: "02-233-1731" },
+            { id: 3, name: "Fairy Fox Cafe", category: "Kids Cafe", area: "Phutthamonthon", price: "Medium", age: "3-9", desc: "Themed cafe with foxes, rabbits, and a large garden playground.", address: "Phutthamonthon Sai 1, Bangkok", maps: "https://maps.google.com/?q=Fairy+Fox+Cafe", instagram: "@fairyfoxcafe", phone: "090-970-3512" },
+            { id: 4, name: "Children's Discovery Museum", category: "Museum / Science", area: "Chatuchak", price: "Free", age: "3-12", desc: "Huge free discovery center with water play.", address: "Kamphaeng Phet 4 Rd, Bangkok", maps: "https://maps.google.com/?q=Children's+Discovery+Museum+Bangkok", instagram: "N/A", phone: "02-272-4500" },
+            { id: 5, name: "HarborLand (Gateway Ekamai)", category: "Indoor Play", area: "Sukhumvit", price: "High", age: "0-12", desc: "Premium indoor playground with slides and bike zones.", address: "Gateway Ekamai, 5th Floor", maps: "https://maps.google.com/?q=HarborLand+Gateway+Ekamai", instagram: "@harborland", phone: "065-848-1000" },
+            { id: 6, name: "Playville", category: "Kids Cafe", area: "Thonglor", price: "Medium", age: "0-5", desc: "Wooden play area for toddlers and babies.", address: "Sukhumvit 49, Bangkok", maps: "https://maps.google.com/?q=Playville+Sukhumvit+49", instagram: "@playville", phone: "02-297-0091" },
+            { id: 7, name: "Bambini Villa", category: "Community Mall", area: "Sukhumvit 26", price: "Medium", age: "0-9", desc: "Family-focused mall with workshops and playgrounds.", address: "Sukhumvit 26, Bangkok", maps: "https://maps.google.com/?q=Bambini+Villa", instagram: "@bambinivilla", phone: "090-907-3333" },
+            { id: 8, name: "Little Pea (The Commons)", category: "Art / Maker Studio", area: "Thonglor", price: "High", age: "0-12", desc: "Curated workshops and messy play.", address: "The Commons Thong Lo", maps: "https://maps.google.com/?q=Little+Pea+The+Commons", instagram: "@littlepeabkk", phone: "02-185-2378" }
+        ];
+
+        // UI Logic
+        function init() {
+            populateFilters();
+            applyFilters();
+            setupForm();
+        }
+
+        function switchView(v) {
+            document.getElementById('view-explore').classList.toggle('hidden', v !== 'explore');
+            document.getElementById('view-manage').classList.toggle('hidden', v !== 'manage');
+            document.getElementById('btn-explore').className = v === 'explore' ? 'px-4 py-2 text-xs font-bold rounded-lg bg-indigo-50 text-indigo-600' : 'px-4 py-2 text-xs font-bold rounded-lg text-slate-500 hover:bg-slate-100';
+            document.getElementById('btn-manage').className = v === 'manage' ? 'px-4 py-2 text-xs font-bold rounded-lg bg-indigo-50 text-indigo-600' : 'px-4 py-2 text-xs font-bold rounded-lg text-slate-500 hover:bg-slate-100';
+            if(v === 'manage') document.getElementById('json-box').value = JSON.stringify(venues, null, 2);
+        }
+
+        function populateFilters() {
+            const areas = ["All", ...new Set(venues.map(v => v.area))].sort();
+            const cats = ["All", ...new Set(venues.map(v => v.category))].sort();
+            document.getElementById('filter-area').innerHTML = areas.map(a => `<option value="${a}">${a}</option>`).join('');
+            document.getElementById('filter-cat').innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('search-box').value.toLowerCase();
+            const area = document.getElementById('filter-area').value;
+            const cat = document.getElementById('filter-cat').value;
+
+            const filtered = venues.filter(v => {
+                if(area !== 'All' && v.area !== area) return false;
+                if(cat !== 'All' && v.category !== cat) return false;
+                if(search && !v.name.toLowerCase().includes(search) && !v.desc.toLowerCase().includes(search)) return false;
+                return true;
+            });
+
+            renderList(filtered);
+        }
+
+        function renderList(list) {
+            const container = document.getElementById('grid-container');
+            document.getElementById('res-count').innerText = list.length;
+            container.innerHTML = list.map(v => `
+                <div onclick="openModal(${v.id})" class="bg-white p-5 rounded-2xl shadow-sm card-shadow flex flex-col cursor-pointer group">
+                    <div class="flex-grow">
+                        <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">${v.category}</span>
+                        <h3 class="font-bold text-sm text-slate-900 mt-3 group-hover:text-indigo-600 transition">${v.name}</h3>
+                        <p class="text-[10px] text-slate-400 mt-1">📍 ${v.area}</p>
+                        <p class="text-[11px] text-slate-600 mt-3 line-clamp-2 leading-relaxed">${v.desc}</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-50 flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase">
+                        <span>${v.price} Price</span>
+                        <span class="text-indigo-600">Details →</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openModal(id) {
+            const v = venues.find(item => item.id === id);
+            document.getElementById('modal-content').innerHTML = `
+                <span class="text-[10px] font-bold uppercase text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100 mb-2 inline-block">${v.category}</span>
+                <h2 class="text-3xl font-bold text-slate-900 leading-tight">${v.name}</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+                    <div class="space-y-4">
+                        <h4 class="text-[10px] font-bold text-slate-400 uppercase">Address</h4>
+                        <p class="text-sm text-slate-700 font-medium leading-relaxed">${v.address}</p>
+                        <a href="${v.maps}" target="_blank" class="text-indigo-600 font-bold text-sm underline flex items-center">Open Google Maps ↗</a>
+                    </div>
+                    <div class="space-y-4">
+                        <h4 class="text-[10px] font-bold text-slate-400 uppercase">Contact</h4>
+                        <p class="text-sm text-slate-700 font-medium">📞 ${v.phone}</p>
+                        <p class="text-sm text-indigo-600 font-bold">📸 Instagram: ${v.instagram}</p>
+                    </div>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                    <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-2">Researcher Notes</h4>
+                    <p class="text-sm text-slate-600 leading-relaxed">${v.desc}</p>
+                </div>
+            `;
+            document.getElementById('detail-modal').classList.remove('hidden');
+        }
+
+        function closeModal() { document.getElementById('detail-modal').classList.add('hidden'); }
+
+        function copyJSON() {
+            const box = document.getElementById('json-box');
+            box.select();
+            document.execCommand('copy');
+            alert("Secret List copied to clipboard!");
+        }
+
+        function importJSON() {
+            try {
+                venues = JSON.parse(document.getElementById('json-box').value);
+                populateFilters();
+                applyFilters();
+                switchView('explore');
+                alert("Database updated!");
+            } catch(e) { alert("Format Error: Ensure the text is valid JSON."); }
+        }
+
+        function setupForm() {
+            document.getElementById('add-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const v = {
+                    id: Date.now(),
+                    name: document.getElementById('in-name').value,
+                    area: document.getElementById('in-area').value || 'BKK',
+                    category: document.getElementById('in-cat').value || 'TBD',
+                    price: 'Medium', age: 'All', desc: 'Manual entry.', 
+                    address: 'TBD', maps: '#', instagram: 'TBD', phone: 'TBD'
+                };
+                venues.push(v);
+                e.target.reset();
+                populateFilters();
+                applyFilters();
+                switchView('explore');
+            });
+        }
+
+        function exportCSV() {
+            const rows = venues.map(v => [v.id, v.name, v.category, v.area, v.price, v.address]);
+            let csvContent = "data:text/csv;charset=utf-8,ID,Name,Category,Area,Price,Address\n" + rows.map(e => e.join(",")).join("\n");
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "bkk_kids_data.csv");
+            document.body.appendChild(link);
+            link.click();
+        }
+
+        init();
+    </script>
+</body>
+</html>
