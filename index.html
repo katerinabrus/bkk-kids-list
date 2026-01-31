@@ -97,14 +97,119 @@
         // You can add more manually here following this exact structure.
         let venues = [
             // --- KIDS CAFES ---
-            { id: 1, name: "Playville", category: "Cafe", area: "Thonglor", price: "Medium", age: "0-6", desc: "Cozy indoor playground and select shop. Focuses on wooden toys and high cleanliness standards.", address: "8/3 Klang Alley, Sukhumvit 49, Bangkok", maps: "https://www.google.com/maps/search/Playville+Sukhumvit+49+Bangkok", instagram: "@playville", phone: "02-297-0091", facebook: "playvillethailand" },
-            { id: 2, name: "Mari Go Round", category: "Cafe", area: "Sukhumvit", price: "Medium", age: "0-6", desc: "Premium Korean-style kids' cafe with an indoor carousel and high-quality play zones.", address: "RQ Residence, Sukhumvit 49/9, Bangkok", maps: "https://www.google.com/maps/search/Mari+go+round+Premium+Kids+Cafe+Bangkok", instagram: "@marigoround.kidscafe", phone: "065-909-2929", facebook: "marigoround.kidscafe" },
-            { id: 3, name: "Sweet Poppy", category: "Cafe", area: "Nonthaburi", price: "High", age: "0-12", desc: "Modern Australian bistro with a massive outdoor playground, water play, and garden oasis.", address: "90/10 Samakee Rd, Nonthaburi", maps: "https://www.google.com/maps/search/Sweet+Poppy+Nonthaburi", instagram: "@sweetpoppythailand", phone: "02-005-5206", facebook: "sweetpoppythailand" },
-            { id: 4, name: "Fairy Fox Cafe", category: "Cafe", area: "Sukhumvit", price: "Medium", age: "0-7", desc: "Creative indoor and outdoor play zones with sensory activities and themed playgroups.", address: "59/28 Sukhumvit 26, Bangkok", maps: "https://www.google.com/maps/search/Fairy+Fox+Kids+Cafe+Sukhumvit+26", instagram: "@fairyfoxcafe", phone: "098-855-5466", facebook: "fairyfoxcafe" },
-            { id: 6, name: "Little Pea Kids Commons", category: "Community Hub", area: "Thonglor", price: "High", age: "0-12", desc: "Creative hub offering messy play, science workshops, and a Lego bar in a vibrant community mall.", address: "The Commons Thong Lo, 3rd Floor, Bangkok", maps: "https://www.google.com/maps/search/Little+Pea+theCOMMONS+Thonglor", instagram: "@littlepeabkk", phone: "02-185-2378", facebook: "littlepeabkk" },
-            { id: 7, name: "Two To Tree", category: "Cafe", area: "Pathum Thani", price: "Low", age: "0-9", desc: "Casual garden cafe with sandpits and rabbit interactions.", address: "Bang Khu Wat, Pathum Thani", maps: "https://www.google.com/maps/search/Two+To+Tree+Cafe+Pathum+Thani", instagram: "@twototree", phone: "065-224-4665", facebook: "twototree" },
-            { id: 8, name: "Safari Garden Playground", category: "Cafe", area: "On Nut", price: "Medium", age: "2-10", desc: "Nature-themed playground with water play, animal feeding, and family cafe.", address: "430 On Nut 17, Bangkok", maps: "https://www.google.com/maps/search/Safari+Garden+Playground+On+Nut+17", instagram: "N/A", phone: "064-825-1561", facebook: "safari.garden.cafe" },
-            { id: 9, name: "Little Forest & Big River", category: "Cafe", area: "Ayutthaya", price: "Medium", age: "2-12", desc: "Massive riverside 'forest' playground with wooden structures and nature play.", address: "2/1 Ayutthaya, Thailand", maps: "https://www.google.com/maps/search/Little+Forest+and+a+big+river+Ayutthaya", instagram: "@littleforest_abigriver", phone: "095-998-6244", facebook: "littleforest.bigriver" },
+            {
+  id: 1,
+  name: "Playville",
+  category: "Cafe",
+  area: "Thonglor",
+  price: "Medium",
+  age: "0-6",
+  desc: "Indoor playground + select shop (toys/kids/maternity), designed for babies to preschoolers; popular for playgroups and parties.",
+  address: "8/3 Klang Alley (Soi Sukhumvit 49), Khlong Tan Nuea, Watthana, Bangkok 10110",
+  maps: "https://www.google.com/maps/search/?api=1&query=Playville%2C%208%2F3%20Klang%20Alley%20(Sukhumvit%2049)%2C%20Bangkok%2010110",
+  instagram: "@playville",
+  phone: "02-297-0091",
+  facebook: "playvillethailand"
+},
+{
+  id: 2,
+  name: "Mari Go Round (Premium Kids Cafe)",
+  category: "Cafe",
+  area: "Sukhumvit 49/9",
+  price: "Medium",
+  age: "0-6",
+  desc: "Premium Korean-style kids cafe for under-6s with indoor play zones (often cited for its carousel feature).",
+  address: "RQ Residence Building, Room 107 (Ground Floor), Sukhumvit 49/9 Alley, Khlong Tan Nuea, Watthana, Bangkok 10110",
+  maps: "https://www.google.com/maps/search/?api=1&query=Mari%20go%20round%20Premium%20Kids%20Cafe%2C%20RQ%20Residence%20Building%20Room%20107%2C%20Sukhumvit%2049%2F9%2C%20Bangkok%2010110",
+  instagram: "@marigoround.kidscafe",
+  phone: "065-909-2929",
+  facebook: "marigoround.kidscafe"
+},
+{
+  id: 3,
+  name: "Sweet Poppy",
+  category: "Cafe",
+  area: "Nonthaburi",
+  price: "High",
+  age: "0-12",
+  desc: "Restaurant/cafe lifestyle space with a kid-friendly garden and adventure playground; includes water play and sand area.",
+  address: "90/10 Samakee Rd, Tha Sai, Mueang Nonthaburi, Nonthaburi 11000",
+  maps: "https://www.google.com/maps/search/?api=1&query=Sweet%20Poppy%2C%2090%2F10%20Samakee%20Rd%2C%20Tha%20Sai%2C%20Mueang%20Nonthaburi%2011000",
+  instagram: "@sweetpoppythailand",
+  phone: "02-005-5206",
+  facebook: "sweetpoppythailand"
+},
+{
+  id: 4,
+  name: "Fairy Fox Kid Cafe",
+  category: "Cafe",
+  area: "Sukhumvit 26",
+  price: "Medium",
+  age: "0-7",
+  desc: "Kids cafe with indoor + outdoor play zones (e.g., garden play, sand/water-play style activities) and frequent playgroups.",
+  address: "59/28 Sukhumvit 26, Khlong Tan, Khlong Toei, Bangkok 10110",
+  maps: "https://www.google.com/maps/search/?api=1&query=Fairy%20Fox%20Kid%20Cafe%2C%2059%2F28%20Sukhumvit%2026%2C%20Bangkok%2010110",
+  instagram: "@fairyfoxcafe",
+  phone: "098-855-5466",
+  facebook: "fairyfoxcafe"
+},
+{
+  id: 6,
+  name: "Little Pea Kids Commons",
+  category: "Community Hub",
+  area: "Thonglor",
+  price: "High",
+  age: "0-12",
+  desc: "Family activity hub inside theCOMMONS with multi-sensory play + workshops/camps/events; also runs birthday/party activities.",
+  address: "theCOMMONS (Play Yard, Fl. 2), 335 Sukhumvit 55 (Thonglor Soi 17), Khlong Tan Nuea, Watthana, Bangkok 10110",
+  maps: "https://www.google.com/maps/search/?api=1&query=Little%20Pea%20Kids%20Commons%2C%20theCOMMONS%2C%20335%20Sukhumvit%2055%20Thonglor%2017%2C%20Bangkok%2010110",
+  instagram: "@littlepeabkk",
+  phone: "065-392-5658",
+  facebook: "littlepeabkk"
+},
+// NOTE: I couldn't reliably verify this venue identity online (name collision with unrelated places). Keep, but please double-check.
+{
+  id: 7,
+  name: "Two To Tree",
+  category: "Cafe",
+  area: "Pathum Thani",
+  price: "Low",
+  age: "0-9",
+  desc: "Garden cafe (per your notes) with sandpits and rabbit interactions.",
+  address: "Bang Khu Wat, Pathum Thani",
+  maps: "https://www.google.com/maps/search/?api=1&query=Two%20To%20Tree%20Cafe%20Bang%20Khu%20Wat%2C%20Pathum%20Thani",
+  instagram: "@twototree",
+  phone: "065-224-4665",
+  facebook: "twototree"
+},
+{
+  id: 8,
+  name: "Safari Garden Playground",
+  category: "Cafe",
+  area: "On Nut",
+  price: "Medium",
+  age: "2-10",
+  desc: "Family cafe + playground in a nature setting (notably with water-play), popular for letting kids run free.",
+  address: "On Nut 17 Yaek 10, Suan Luang, Bangkok 10250",
+  maps: "https://www.google.com/maps/search/?api=1&query=Safari%20Garden%20Playground%20%26%20Cafe%2C%20On%20Nut%2017%20Yaek%2010%2C%20Bangkok%2010250",
+  instagram: "N/A",
+  phone: "064-826-3179",
+  facebook: "safari.garden.cafe"
+},
+{
+  id: 9,
+  name: "Little Forest & Big River",
+  category: "Cafe",
+  area: "Ayutthaya",
+  price: "Medium",
+  age: "2-12",
+  desc: "Cafe/play space in Ayutthaya (Bang Sai area) known for a big natural/wooden play setting; popular for family day trips.",
+  address: "Chiang Rak Noi, Bang Sai, Phra Nakhon Si Ayutthaya 13290",
+  maps: "https://www.google.com/maps/search/?api=1&query=Little%20forest%20%26%20A%20big%20river%2C%20Bang%20Sai%2C%20Ayutthaya%2013290",
+  instagram: "@littleforest_abigriver",
+  phone: "095-998-6244",
+  facebook: "littleforest.bigriver"
+},
             { id: 10, name: "Baantonkla Cafe", category: "Cafe", area: "Srinakarin", price: "Medium", age: "2-10", desc: "Family-friendly cafe with private party rooms, library, playground, and sandpit.", address: "Soi Srinagarindra 24, Suan Luang, Bangkok", maps: "https://www.google.com/maps/search/?api=1&query=Baantonkla%20Cafe%20Soi%20Srinagarindra%2024%2C%20Suan%20Luang%2C%20Bangkok", instagram: "N/A", phone: "091-881-8123", facebook: "baantonklacafe" },
             { id: 11, name: "Bambini Villa", category: "Family Mall", area: "Sukhumvit 26", price: "Varies", age: "All", desc: "Boutique mall tailored for families. Houses multiple kids' cafes and enrichment centers.", address: "18 Soi Athakravi 1, Sukhumvit 26, Bangkok", maps: "https://www.google.com/maps/search/?api=1&query=Bambini%20Villa%2018%20Soi%20Athakravi%201%2C%20Sukhumvit%2026%2C%20Bangkok", instagram: "@bambinivillabkk", phone: "02-090-1999", facebook: "bambinivilla" },
             { id: 12, name: "Moby Kids Cafe", category: "Kids Cafe", area: "Ratchada", price: "Medium", age: "0-6", desc: "Cozy neighborhood kids cafe with role-play stations; popular for private birthday bookings.", address: "244/5 Ratchadaphisek Rd, Huai Khwang, Bangkok", maps: "https://www.google.com/maps/search/?api=1&query=Moby%20Kids%20Cafe%20244%2F5%20Ratchadaphisek%20Rd%2C%20Huai%20Khwang%2C%20Bangkok", instagram: "@moby_kidscafe", phone: "081-816-5544", facebook: "moby.kidscafe" },
@@ -262,6 +367,7 @@
     </script>
 </body>
 </html>
+
 
 
 
