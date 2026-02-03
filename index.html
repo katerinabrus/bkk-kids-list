@@ -92,22 +92,22 @@
     /*****************************************************************
      * CONFIG (YOUR LINKS)
      *****************************************************************/
-    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSEVt0blGkEQLp_nZ8btg-CV0poZtwebf3k1hOPSZ5-fel15vMNQzd5mHQ48WnFixu-KCcDi1TsNZ5u/pub?output=csv";
+    const SHEET_URL =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSEVt0blGkEQLp_nZ8btg-CV0poZtwebf3k1hOPSZ5-fel15vMNQzd5mHQ48WnFixu-KCcDi1TsNZ5u/pub?output=csv";
 
-    // This MUST be the "Get pre-filled link" URL (you provided it ✅)
+    // Pre-filled Google Form link you provided
     const FORM_PREFILL_TEMPLATE =
       "https://docs.google.com/forms/d/e/1FAIpQLSftVhVHiEU1-fp7wMQj9AkR2vuRoLCz6gWOQNVJj14XwFcssw/viewform?usp=pp_url&entry.1418308748=1&entry.435347963=test";
 
     // Expected column headers in your Google Sheet (Row 1)
-    // Keep these consistent in the sheet.
     const COLS = {
       id: "id",
       name: "name",
       category: "category",
       area: "area",
       desc: "desc",
-      maps: "maps"
-      // Intentionally NOT using address/price/age/phone anywhere.
+      maps: "maps",
+      instagram: "instagram" // ✅ added
     };
 
     /*****************************************************************
@@ -140,6 +140,22 @@
 
     const isHttpUrl = (s) => /^https?:\/\//i.test(norm(s));
 
+    // Turn "@handle" or "handle" into https://instagram.com/handle
+    function instagramUrl(handle) {
+      const h = norm(handle).replace(/^@/, "");
+      if (!h) return "";
+      // treat "N/A" as empty
+      if (h.toLowerCase() === "n/a") return "";
+      return `https://instagram.com/${encodeURIComponent(h)}`;
+    }
+
+    function cleanIgHandle(handle) {
+      const h = norm(handle).replace(/^@/, "");
+      if (!h) return "";
+      if (h.toLowerCase() === "n/a") return "";
+      return h;
+    }
+
     function setStatus(msg) {
       document.getElementById("status").textContent = msg || "";
     }
@@ -157,19 +173,16 @@
     }
 
     /*****************************************************************
-     * GOOGLE FORM PREFILL LINK BUILDER (Option A)
-     * Your template contains placeholder values:
-     *   entry.1418308748 = 1   (venue id placeholder)
+     * GOOGLE FORM PREFILL LINK BUILDER
+     * Template placeholders:
+     *   entry.1418308748 = 1    (venue id placeholder)
      *   entry.435347963  = test (venue name placeholder)
-     * We replace those with the actual venue values.
      *****************************************************************/
     function buildSuggestEditLink(v) {
       const url = new URL(FORM_PREFILL_TEMPLATE);
 
       for (const [k, val] of url.searchParams.entries()) {
         if (!k.startsWith("entry.")) continue;
-
-        // Replace placeholder ID and placeholder name from your template
         if (val === "1") url.searchParams.set(k, String(v.id));
         if (val === "test") url.searchParams.set(k, v.name);
       }
@@ -187,6 +200,7 @@
       const area = norm(row[COLS.area]);
       const desc = norm(row[COLS.desc]);
       const maps = norm(row[COLS.maps]);
+      const instagram = norm(row[COLS.instagram]); // ✅ added
 
       const fallbackId =
         name
@@ -194,15 +208,16 @@
           : (crypto?.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2));
 
       const v = {
-        id: id || fallbackId,   // keep as string; sheet may store 1,2,3
+        id: id || fallbackId,
         name,
         category,
         area,
         desc,
-        maps
+        maps,
+        instagram // ✅ added
       };
 
-      v.searchText = (v.name + " " + v.desc).toLowerCase();
+      v.searchText = (v.name + " " + v.desc + " " + cleanIgHandle(v.instagram)).toLowerCase();
 
       return v;
     }
@@ -233,7 +248,7 @@
             const rawRows = Array.isArray(results.data) ? results.data : [];
             venues = rawRows
               .map(normalizeVenue)
-              .filter(v => v.name); // keep only rows with a name
+              .filter(v => v.name);
 
             const dupes = enforceUniqueIds(venues);
             if (dupes.length) {
@@ -283,14 +298,12 @@
 
       document.getElementById("reload-btn").addEventListener("click", loadData);
 
-      // Event delegation for cards
       document.getElementById("grid-container").addEventListener("click", (e) => {
         const card = e.target.closest(".venue-card");
         if (!card) return;
         openModal(card.dataset.id);
       });
 
-      // Modal close actions
       document.getElementById("modal-close").addEventListener("click", closeModal);
       document.getElementById("modal-backdrop").addEventListener("click", closeModal);
 
@@ -334,33 +347,46 @@
     }
 
     /*****************************************************************
-     * RENDER GRID (NO address/price/age/phone)
+     * RENDER GRID (tiles now show Instagram handle if present)
      *****************************************************************/
     function renderGrid(data) {
       const container = document.getElementById("grid-container");
 
-      container.innerHTML = data.map(v => `
-        <div
-          class="venue-card bg-white p-5 rounded-2xl card-shadow flex flex-col justify-between cursor-pointer hover:translate-y-[-1px] transition"
-          data-id="${esc(v.id)}"
-        >
-          <div>
-            <div class="flex justify-between items-start mb-3">
-              <span class="px-2 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-md uppercase">${esc(v.category || "uncategorized")}</span>
-              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">${esc(v.area || "")}</span>
-            </div>
+      container.innerHTML = data.map(v => {
+        const ig = cleanIgHandle(v.instagram);
+        return `
+          <div
+            class="venue-card bg-white p-5 rounded-2xl card-shadow flex flex-col justify-between cursor-pointer hover:translate-y-[-1px] transition"
+            data-id="${esc(v.id)}"
+          >
+            <div>
+              <div class="flex justify-between items-start mb-3">
+                <span class="px-2 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-md uppercase">
+                  ${esc(v.category || "uncategorized")}
+                </span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  ${esc(v.area || "")}
+                </span>
+              </div>
 
-            <h3 class="font-bold text-slate-900 mb-2 leading-tight">${esc(v.name)}</h3>
-            <p class="text-xs text-slate-500 line-clamp-2">${esc(v.desc)}</p>
+              <h3 class="font-bold text-slate-900 mb-2 leading-tight">${esc(v.name)}</h3>
+              <p class="text-xs text-slate-500 line-clamp-2">${esc(v.desc)}</p>
+
+              ${ig ? `
+                <div class="mt-2 text-[11px] text-slate-400 font-medium">
+                  @${esc(ig)}
+                </div>
+              ` : ""}
+            </div>
           </div>
-        </div>
-      `).join("");
+        `;
+      }).join("");
 
       document.getElementById("res-count").innerText = String(data.length);
     }
 
     /*****************************************************************
-     * MODAL
+     * MODAL (adds clickable Instagram link)
      *****************************************************************/
     function openModal(id) {
       const v = venues.find(item => String(item.id) === String(id));
@@ -368,6 +394,9 @@
 
       const mapsLink = isHttpUrl(v.maps) ? norm(v.maps) : "";
       const suggestUrl = buildSuggestEditLink(v);
+
+      const igHandle = cleanIgHandle(v.instagram);
+      const igLink = igHandle ? instagramUrl(igHandle) : "";
 
       document.getElementById("modal-content").innerHTML = `
         <div class="space-y-6">
@@ -381,6 +410,16 @@
             <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Notes</h4>
             <p class="text-sm text-slate-600 leading-relaxed">${esc(v.desc)}</p>
           </div>
+
+          ${igLink ? `
+            <div class="space-y-1">
+              <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Instagram</h4>
+              <a href="${igLink}" target="_blank" rel="noopener"
+                 class="text-sm font-medium text-indigo-600 hover:underline">
+                @${esc(igHandle)}
+              </a>
+            </div>
+          ` : ""}
 
           <div class="flex flex-col sm:flex-row gap-3">
             ${
